@@ -8,6 +8,14 @@ export const i18n = (state) => (value) => {
     return value
 }
 
+export const avatar = (state) => (d) => {
+    let image = d.data.data.avatar
+    if (!image) {
+        image = state.defaultAvatar || null
+    }
+    return image
+}
+
 function isResultDefined(value) {
     return value !== undefined
 } 

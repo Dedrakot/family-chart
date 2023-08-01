@@ -1,6 +1,6 @@
 import CalculateTree from "./CalculateTree/CalculateTree.js"
 import {createTreeDataWithMainNode} from "./handlers/newPerson.js"
-import {i18n} from "./storeSettings.js"
+import {i18n, avatar} from "./storeSettings.js"
 
 export default function createStore(initial_state) {
   let onUpdate;
@@ -17,7 +17,8 @@ export default function createStore(initial_state) {
     getTree = () => state.tree,
     setOnUpdate = (f) => onUpdate = f,
     methods = {
-      i18n: i18n(state)
+      i18n: i18n(state),
+      avatar: avatar(state)
     }
 
   return {state, update, getData, getTree, setOnUpdate, methods}
