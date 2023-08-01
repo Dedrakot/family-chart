@@ -20,7 +20,7 @@ export function Card(props) {
       gender_class = d.data.data.gender === 'M' ? 'card-male' : d.data.data.gender === 'F' ? 'card-female' : 'card-genderless',
       card_dim = props.card_dim,
       show_mini_tree = !isAllRelativeDisplayed(d, store.state.tree.data),
-      unknown_lbl = props.cardEditForm ? 'ADD' : 'UNKNOWN',
+      unknown_lbl = unknownLabel(d),
 
       mini_tree = () => !d.data.to_add && show_mini_tree ? MiniTree({d,card_dim}).template : '',
       card_body_outline = () => CardBodyOutline({d,card_dim,is_new:d.data.to_add}).template,
@@ -123,5 +123,20 @@ export function Card(props) {
       if (typeof props[k] === 'undefined') props[k] = default_props[k]
     }
     return props
+  }
+
+  function unknownLabel(d) {
+    if (props.cardEditForm) {
+      return store.methods.i18n('ADD')
+    }
+    let label = 'UNKNOWN'
+    let genderedLabel = label + '_' + d.data.data.gender
+    let translatedLabel = store.methods.i18n(genderedLabel)
+    if (translatedLabel !== genderedLabel) {
+      label = translatedLabel
+    } else {
+      label = store.methods.i18n(label)
+    }
+    return label
   }
 }
