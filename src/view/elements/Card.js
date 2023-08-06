@@ -29,7 +29,8 @@ export function Card(props) {
       edit_icon = () => !d.data.to_add && props.cardEditForm ? PencilIcon({card_dim, x: card_dim.w-46, y: card_dim.h-20}).template : '',
       add_icon = () => !d.data.to_add && props.cardEditForm ? PlusIcon({card_dim, x: card_dim.w-26, y: card_dim.h-20}).template : '',
       link_break_icon = () => LinkBreakIconWrapper({d,card_dim}),
-      custom_elements = () => props.custom_elements ? props.custom_elements.map(d => d.el).join('\n') : ''
+      custom_elements = props.custom_elements ? props.custom_elements.map(custom => 
+        typeof custom.el === 'function' ? custom.el(d.data, card_dim) : custom.el).join('\n') : ''
 
     el.innerHTML = (`
       <g class="card ${gender_class}" data-id="${d.data.id}" data-cy="card">
@@ -41,7 +42,7 @@ export function Card(props) {
             ${card_image()}
             ${edit_icon()}
             ${add_icon()}
-            ${custom_elements()}
+            ${custom_elements}
           </g>
           ${props.link_break ? link_break_icon() : ''}
         </g>
