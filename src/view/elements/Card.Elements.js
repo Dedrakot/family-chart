@@ -184,7 +184,9 @@ export function DivorceIconWrapper({store, d, card_dim}) {
       return null
     }).filter(s => !!s).join('\n')
   } else {
-    if (divorces.find(sid => sid == d.spouse.data.id)) {
+    // TODO: Bug. It's possible that d.spouse and d.spouses will be undefined, but spouses are shown.
+    // Happend when child element selected
+    if (d.spouse && divorces.find(sid => sid == d.spouse.data.id)) {
       return DivorceIcon({x: xBase, y})
     }
   }
