@@ -167,3 +167,38 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
     `)
   }
 }
+
+export function DivorceIconWrapper({store, d, card_dim}) {
+  const y = card_dim.h/2 - 7
+  const divorces = d.data.rels.divorces
+  let xBase = d.data.data.gender === 'M' ? card_dim.w + 2 : -16
+  if (d.spouses) {
+    let delta = store.state.node_separation
+    if (d.data.data.gender !== 'M') {
+      delta = -delta
+    }
+    return d.spouses.map((spouse, idx) => {
+      if (divorces.find(sid => sid === spouse.data.id)) {
+        return DivorceIcon({x: xBase + delta*idx,y})
+      }
+      return null
+    }).filter(s => !!s).join('\n')
+  } else {
+    if (divorces.find(sid => sid == d.spouse.data.id)) {
+      return DivorceIcon({x: xBase, y})
+    }
+  }
+  return ''
+}
+
+function DivorceIcon({x, y}) {
+  return (`
+  <g transform="translate(${x},${y})matrix(0.13984903,0,0,0.14005901,-0.00100925,-0.00521254)">
+    <path
+        d="M 6.3895625,6.4195626 C 93.580437,93.610437 93.580437,93.610437 93.580437,93.610437"
+        style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:18.052;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+    <path
+        d="M 6.3894001,93.6106 C 93.830213,6.4194003 93.830213,6.4194003 93.830213,6.4194003"
+        style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:17.802;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+  </g>`)
+}
