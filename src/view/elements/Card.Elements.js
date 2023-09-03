@@ -171,10 +171,11 @@ export function CardImage({d, image, card_dim, maleIcon, femaleIcon}) {
 export function DivorceIconWrapper({store, d, card_dim}) {
   const y = card_dim.h/2 - 7
   const divorces = d.data.rels.divorces
-  let xBase = d.data.data.gender === 'M' ? card_dim.w + 2 : -16
+  const male = d.data.data.gender === 'M'
+  let xBase = male ? card_dim.w + 2 : -16
   if (d.spouses) {
     let delta = store.state.node_separation
-    if (d.data.data.gender !== 'M') {
+    if (!male) {
       delta = -delta
     }
     return d.spouses.map((spouse, idx) => {
@@ -184,9 +185,7 @@ export function DivorceIconWrapper({store, d, card_dim}) {
       return null
     }).filter(s => !!s).join('\n')
   } else {
-    // TODO: Bug. It's possible that d.spouse and d.spouses will be undefined, but spouses are shown.
-    // Happend when child element selected
-    if (d.spouse && divorces.find(sid => sid == d.spouse.data.id)) {
+    if ((d.spouse && divorces.find(sid => sid == d.spouse.data.id)) || isBothDivorcedVisibleFromChildren(d)) {
       return DivorceIcon({x: xBase, y})
     }
   }
@@ -203,4 +202,14 @@ function DivorceIcon({x, y}) {
         d="M 6.3894001,93.6106 C 93.830213,6.4194003 93.830213,6.4194003 93.830213,6.4194003"
         style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:17.802;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
   </g>`)
+}
+
+function isBothDivorcedVisibleFromChildren(d) {
+  if (d.parent?.parents) {
+    let idx = d.parent.parents.findIndex(node => node.data.id == d.data.id)
+    if (idx !== -1) {
+      return d.data.rels.divorces.find(sid => sid == d.parent.parents[idx == 0 ? 1 : 0].data.id)  
+    }
+  } 
+  return false; 
 }
